@@ -14,7 +14,7 @@
 
     Activar el entorno virtual:
     ```bash
-    .\.venv\Scripts\activate
+    source .venv/Scripts/activate
     ```
 
 3. **Instalar las dependencias**:
