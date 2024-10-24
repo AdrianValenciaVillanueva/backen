@@ -3,7 +3,7 @@
 1. **Clonar el repositorio**: 
     ```bash
     git clone https://github.com/AdrianValenciaVillanueva/backen.git
-    cd backend_progra_logica
+    cd backen
     ```
 
 2. **Crear y activar un entorno virtual**: 
