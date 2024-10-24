@@ -2,7 +2,7 @@
 
 1. **Clonar el repositorio**: 
     ```bash
-    git clone https://github.com/AdrianValenciaVillanueva/backend_progra_logica.git
+    git clone https://github.com/AdrianValenciaVillanueva/backen.git
     cd backend_progra_logica
     ```
 
