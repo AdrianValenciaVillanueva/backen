@@ -27,3 +27,7 @@ class UserResponse(BaseModel):
 
     class Config:
         from_mode = True
+
+class UserLogin(BaseModel):
+    username: str
+    password: str
