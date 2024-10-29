@@ -59,10 +59,21 @@ def get_tasks_by_user(user_id: str, tasks_collection: Collection = Depends(get_t
         task["_id"] = str(task["_id"])
     return tasks
 
-#obtener tarea pendientes de un usuario por su id_team
+#obtener tarea pendientes de un usuario por su id
 @router.get("/tasks/user/{user_id}/pending", response_model=List[Task])
 def get_pending_tasks_by_user(user_id: str, tasks_collection: Collection = Depends(get_tasks_collection)):
     tasks = list(tasks_collection.find({"user_id": user_id, "status": "pending"}))
+    for task in tasks:
+        task["_id"] = str(task["_id"])
+    return tasks
+
+
+#obtener tareas por nombre de usuario
+@router.get("/tasks/username/{username}", response_model=List[Task])
+def get_tasks_by_username(username: str, tasks_collection: Collection = Depends(get_tasks_collection)):
+    tasks = list(tasks_collection.find({"username": username}))
+    if not tasks:
+        raise HTTPException(status_code=404, detail="Tasks not found")
     for task in tasks:
         task["_id"] = str(task["_id"])
     return tasks
