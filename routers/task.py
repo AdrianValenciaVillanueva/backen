@@ -4,7 +4,7 @@ from typing import List
 from pymongo.collection import Collection
 from bson import ObjectId
 from datetime import datetime
-from models.task import Task
+from models.task import Task ,TaskResponse
 
 # Definición del router
 router = APIRouter()
@@ -23,11 +23,12 @@ def create_task(task: Task, tasks_collection: Collection = Depends(get_tasks_col
     return task_dict
 
 # Obtener todas las tareas
-@router.get("/tasks/", response_model=List[Task])
+@router.get("/tasks/", response_model=List[TaskResponse])
 def get_tasks(tasks_collection: Collection = Depends(get_tasks_collection)):
     tasks = list(tasks_collection.find())
     for task in tasks:
-        task["_id"] = str(task["_id"])
+        task["id"] = str(task["_id"])  # Renombrar _id a id
+        del task["_id"]  # Eliminar el campo _id
     return tasks
 
 # Obtener una tarea por ID
@@ -67,6 +68,15 @@ def get_pending_tasks_by_user(user_id: str, tasks_collection: Collection = Depen
         task["_id"] = str(task["_id"])
     return tasks
 
+#obtener tareas echar por _id usuario
+@router.get("/tasks/user/{user_id}/completed", response_model=List[TaskResponse])
+def get_completed_tasks_by_user(user_id: str, tasks_collection: Collection = Depends(get_tasks_collection)):
+    tasks = list(tasks_collection.find({"user_id": user_id, "status": "completed"}))
+    for task in tasks:
+        task["id"] = str(task["_id"])  # Renombrar _id a id
+        del task["_id"]  # Eliminar el campo _id
+    return tasks
+
 
 #obtener tareas por nombre de usuario
 @router.get("/tasks/username/{username}", response_model=List[Task])
@@ -93,4 +103,16 @@ def get_pending_tasks_by_team(team_id: str, tasks_collection: Collection = Depen
     for task in tasks:
         task["_id"] = str(task["_id"])
     return tasks
+
+#marcar tareas como ehca por _id
+@router.put("/tasks/{task_id}/completed", response_model=Task)
+def mark_task_as_completed(task_id: str, tasks_collection: Collection = Depends(get_tasks_collection)):
+    task = tasks_collection.find_one({"_id": ObjectId(task_id)})
+    if task is None:
+        raise HTTPException(status_code=404, detail="Task not found")
+    task["status"] = "completed"
+    task["updated_at"] = datetime.utcnow()
+    tasks_collection.replace_one({"_id": ObjectId(task_id)}, task)
+    task["_id"] = str(task["_id"])
+    return task
 

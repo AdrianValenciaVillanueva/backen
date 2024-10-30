@@ -29,3 +29,21 @@ class Task(BaseModel):
             raise ValueError('Deadline must be in the future')
         return v
     
+
+#modelo para la respuesta de la tarea obtener su _id
+
+class TaskResponse(BaseModel):
+    id: str
+    title: str
+    description: str
+    user_id: Optional[str]
+    team_id: str
+    created_at: datetime
+    updated_at: datetime
+    deadline: Optional[datetime]
+    status: str
+
+    class Config:
+        from_mode = True
+
+    
