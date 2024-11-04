@@ -51,13 +51,13 @@ def get_tasks_by_team(team_id: str, tasks_collection: Collection = Depends(get_t
     return tasks
 
 #obtener tareas por usuario asignado
-@router.get("/tasks/user/{user_id}", response_model=List[Task])
+@router.get("/tasks/user/{user_id}", response_model=List[TaskResponse])
 def get_tasks_by_user(user_id: str, tasks_collection: Collection = Depends(get_tasks_collection)):
     tasks = list(tasks_collection.find({"user_id": user_id}))
     if not tasks:
         raise HTTPException(status_code=404, detail="Tasks not found")
     for task in tasks:
-        task["_id"] = str(task["_id"])
+        task["id"] = str(task["_id"])
     return tasks
 
 #obtener tarea pendientes de un usuario por su id
